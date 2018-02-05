@@ -1,5 +1,5 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="mystyles.css">
 <title>SENG513W17 Assignment 2</title>
 <div id="wrapper">
     <div id="form">
@@ -45,6 +45,9 @@
             document.getElementById("button-submit").onclick = function () {
                 res = getStats(txtArea.value);
                 res = JSON.stringify(res, null, 4);
+                /*JSON.stringify(value[, replacer[, space]]) 
+                 in this case you could do console.log(res);
+                 */
                 res = escapeHtml(res);
                 resultsDiv.innerHTML = res;
             }
@@ -93,4 +96,4 @@
         window.onload = onload();
     })();
 </script>
-<script src="code.js"></script>
+<script src="mycode.js"></script>
