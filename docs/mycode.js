@@ -21,6 +21,16 @@ function getStats(txt) {
  */
 
 
+/*
+ TODO
+ 
+ 1. FIX WORDS BY ALLOWING PUNCTUATION TO BE A WORD DIVIDER
+ 2. FIX NON EMPTY LINES
+ 3. FINISH PALINDROMES AND LONGEST WORD 
+ 4. DO MOST FREQUENT WORD.
+ 5. MAKE IT WAY NICER, GLOBAL ARRAY OF ALL WORDS WOULD BE FOR INSTANCE A GO TO
+ */
+
 /*number total chars in the txt*/
 var nChars = function (string_txt){
     var characters = string_txt.length;
@@ -40,16 +50,13 @@ var nLines = function (string_txt){
     return lines;
 }
 
-String.isNullOrEmpty = function (my_string) {
-    return !my_string;
-}
-
 /*number of non empty lines in txt NOT WORKING*/
 var nNonEmptyLines = function (string_txt){
     var lines = string_txt.split(/\r\n|\r|\n/);
     var number_lines = lines.length;
     for (index = 0; index < lines.length; ++index) {
-        if(lines[index].localeCompare(" ")){
+        var first_char =lines[index][0];
+        if(first_char===" "){
          number_lines = number_lines - 1;
         }
     }
@@ -85,70 +92,42 @@ var palindromes = function (string_txt){
     var words = string_txt.split(" ");
     var pal;
     for (index = 0; index < words.length; ++index) {
-        /*palindromes have only odd number of letters so only check those
+        /*palindromes have only odd number of letters so only check those*/
         if ((words[index].length % 2) == 1 ){
-            pal = pal.append(words[index]);
-        }*/
-        pal= words[index];
+            //for now only will show last odd word TODO
+            //righ now return last odd word
+            pal= words[index];
+        }
     }
     return pal;
 }
- 
+/*TODO*/
+var longestWords = function (string_txt){
+    var words = string_txt.split(" ");
+    var long_word = words[0];
+    for (index = 0; index < words.length; ++index) {
+        /*palindromes have only odd number of letters so only check those*/
+        if (words[index].length > long_word.length ){
+            //for now only return last longest word
+            long_word = words[index];
+        }
+    }
+    return long_word;
+}
+/******************** og function + my functions **********************/
 function getStats(txt)  {
    
     return {
     nChars: nChars(txt),
-    nWords: nWords(txt),
+    nWords: nWords(txt),//NEED TO ADD SPERATOR AS NOT ONLY WHITE SPACES
     nLines: nLines(txt),
     nNonEmptyLines: nNonEmptyLines(txt), //NOT WORKING
     averageWordLength: averageWordLength(txt),
     maxLineLength: maxLineLength(txt),
-    palindromes: palindromes(txt),
-    longestWords: ["xxxxxxxxx", "123444444"],
+    palindromes: palindromes(txt),//NOT FINISHED
+    longestWords: longestWords(txt),//NOT FINISHED
     mostFrequentWords: [ "hello(7)", "world(1)" ]
     };
 }
 
 
-/*
-
- function nWords(txt){
- return ("numbers of words in the file is /n", 22);
- }
- 
- 
-function nLines(txt){
-    return ("numbers of lines in the file is /n", 10);
-}
-
-function nNonEmptyLines(txt){
-    return ("numbers of non empty in the file is /n", 22);
-}
-
-function averageWordLength(txt){
-    return ("average word length in the file is /n", 3.3);
-}
-
-function maxLineLength(txt){
-    return ("The maximum line length of the file is /n", 33);
-}
-
-function palindromes(txt){
-    var list_pal = ["kayak", "mom"];
-    return ("The palindrome of the file are: /n", list_pal);
-}
-
-function longestWords(txt){
-    var list_long = ["xxxxxxxxx", "123444444"];
-  return ("The longest words in the file are: /n", list_long);
-}
-
-function mostFrequentWords(txt){
-    var list_freq = [ "hello(7)", "world(1)" ];
-    return ("numbers of non empty in the file is /n", list_freq);
-}
-
-function error_checking_input(txt){
-    return ("not implemented yet /n");
-}
- */
