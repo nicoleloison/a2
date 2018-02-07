@@ -36,6 +36,18 @@ function getStats(txt) {
  IDEAS: PUT ALL WORDS IN GLOBAL HASHTABLE WITH WORD => LENGTH OR WORD => FREQ
  */
 
+/**/
+var no_punc = function (string_txt){
+   var  no_punc = string_txt.replace(/[^\w\s]|'\n'/g, "");
+    return no_punc;
+}
+
+var the_words = function (string_txt){
+    var the_words = string_txt.replace(/\s+/g, " ").toLowerCase();
+    the_words = the_words.split(" ");
+    return the_words;
+}
+
 /*Will contain the total number of characters in the text, including all white spaces.
  nWords: integer*/
 var nChars = function (string_txt){
@@ -43,13 +55,11 @@ var nChars = function (string_txt){
     return characters;
 }
 
-
 /*Will contain the total number of words in the text. For example, “Hello, World-1!” contains three words:
  “hello”, “world” and “1”*/
 var nWords = function (string_txt){
-     var words = string_txt.replace(/\s+/g, " ");
-    //var words = to_words(string_txt);
-    words = string_txt.split(" ");//need to fix the line to word split
+    var words = no_punc(string_txt);
+    words =the_words(words);
     return words.length;
 }
 
@@ -185,9 +195,8 @@ var mostFrequentWords = function (string_txt){
 function getStats(txt)  {
     
     //clean up the txt
-    txt = txt.toLowerCase();
-    txt = txt.replace(/[^\w\s]|'\n'/g, "");
-   
+  //  txt = no_punc(txt);
+    
     return {
     nChars: nChars(txt),
     nWords: nWords(txt),//TOFIX NEED TO ADD SPERATOR AS NOT ONLY WHITE SPACES
