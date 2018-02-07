@@ -5,46 +5,44 @@
 // lAB secion B06
 //
 
+/*global string of the input txt*/
+var input_txt;
 
 /*Table of unique words in txt, key:word, val:freq*/
-
 var wordTable={};
 
-function fill_wordTable(input){
-    for (index = 0; index < input.length; ++index) {
-        if( input[index] in wordTable ){
-            wordTable[input[index]] ++;
+function fill_wordTable(){
+    var input_words = input_txt.toLowerCase().replace(/\s+/g, " ").split(" ");
+    for (index = 0; index < input_words.length; ++index) {
+        if( input_words[index] in wordTable ){
+            wordTable[input_words[index]] ++;
         }
         else{
             //add word to hash table with value = 1
-            wordTable[input[index]]=1;
+            wordTable[input_words[index]]=1;
         }
     }
+    return wordTable;
 }
 
-/*filter function for the object */
+/*populates global variables depending on input*/
+function populate_global_variables(string_txt){
+    input_txt = string_txt.replace(/[^\w\s]|'\n'/g, "");
+    fill_wordTable();
+}
+
+/*empties the stored global variables */
+function clear_data(){
+    for (var member in wordTable){
+        delete wordTable[member];
+    }
+    input_txt = "";
+}
+
+/*filter function for the object, used in most freq and longest word*/
 Object.filter = (obj, predicate) => Object.keys(obj)
 .filter( key => predicate(obj[key]) )
 .reduce( (res, key) => (res[key] = obj[key], res), {} );
-
-/*returns all most frequent words with their frequency*/
-function mostFrequentWords(){
-    var maxfreq = Math.max(...Object.values(wordTable));
-    var most_freq = Object.filter(wordTable, value => value == maxfreq);
-    return most_freq;
-}
-
-/*removes punctuation from txt , keeping only white spaces and new lines*/
-var no_punc = function (string_txt){
-    var  no_punc = string_txt.replace(/[^\w\s]|'\n'/g, "");
-    return no_punc;
-}
-
-/*moves words from txt to table*/
-var transfer_to_table = function (string_txt){
-    var array_w = no_punc(string_txt).toLowerCase().replace(/\s+/g, " ").split(" ");
-    fill_wordTable(array_w);
-}
 
 /*Will contain the total number of characters in the text, including all white spaces.*/
 var nChars = function (string_txt){
@@ -60,15 +58,15 @@ function nWords(){
 }
 
 /*Will contain the number of lines in the text .*/
-var nLines = function (string_txt){
-    var lines = string_txt.split(/\r\n|\r|\n/).length;
+function nLines(){
+    var lines = input_txt.split(/\r\n|\r|\n/).length;
     return lines;
 }
 
 /*Will contain the number of lines in the text containing at least one visible character. We will define visible
  character as any character other than whitespace (space, new-line and tab).*/
-var nNonEmptyLines = function (string_txt){
-    var lines = string_txt.split(/\r\n|\r|\n/);
+function nNonEmptyLines(){
+    var lines = input_txt.split(/\r\n|\r|\n/);
     var number_lines = lines.length;
     for (index = 0; index < lines.length; ++index) {
         var first_char =lines[index][0];
@@ -90,8 +88,8 @@ function averageWordLength(){
 
 //if time fix in pretier
 /*returns max line length*/
-var maxLineLength = function (string_txt){
-    var lines = string_txt.split(/\r\n|\r|\n/);
+function maxLineLength (){
+    var lines = input_txt.split(/\r\n|\r|\n/);
     var temp_max =0;
     for (index = 0; index < lines.length; ++index) {
         
@@ -137,24 +135,32 @@ function longestWords(){
         }
        
     }
-    //IF TIME ONLY, find a filter for array words with the condition
     return longest_w;
 }
+
+/*returns all most frequent words with their frequency*/
+function mostFrequentWords(){
+    var maxfreq = Math.max(...Object.values(wordTable));
+    var most_freq = Object.filter(wordTable, value => value == maxfreq);
+    clear_data();//is here because last function called
+    return most_freq;
+}
+
 /******************** og function + my functions **********************/
 function getStats(txt)  {
     
-    transfer_to_table(txt)
-
+    populate_global_variables(txt);
+    
     return {
-    nChars: nChars(txt),
+    nChars: nChars(txt), //has to use og txt for proper count
     nWords: nWords(),
-    nLines: nLines(txt),
-    nNonEmptyLines: nNonEmptyLines(txt),
+    nLines: nLines(),
+    nNonEmptyLines: nNonEmptyLines(),
     averageWordLength: averageWordLength(),
-    maxLineLength: maxLineLength(txt),
+    maxLineLength: maxLineLength(),
     palindromes: palindromes(),
     longestWords: longestWords(),
-    mostFrequentWords: mostFrequentWords()
+    mostFrequentWords: mostFrequentWords(),
     };
 }
 
