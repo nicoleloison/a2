@@ -24,34 +24,63 @@ function getStats(txt) {
 /*
  TODO
  
- 1. FIX WORDS BY ALLOWING PUNCTUATION TO BE A WORD DIVIDER
- 2. FIX NON EMPTY LINES
- 3. FINISH PALINDROMES AND LONGEST WORD 
- 4. DO MOST FREQUENT WORD.
- 5. MAKE IT WAY NICER, GLOBAL ARRAY OF ALL WORDS WOULD BE FOR INSTANCE A GO TO
- 
- 
- 
- 
- IDEAS: PUT ALL WORDS IN GLOBAL HASHTABLE WITH WORD => LENGTH OR WORD => FREQ
+ 1. check non empty line
+ 2. fix longest word redundancy
+ 3. compute proper palindrom check
  */
 
-/**/
+/*Table of unique words in txt, key:word, val:freq*/
+
+var wordTable={};
+
+function fill_wordTable(input){
+    for (index = 0; index < input.length; ++index) {
+        if( input[index] in wordTable ){
+            wordTable[input[index]] ++;
+        }
+        else{
+            //add word to hash table with value = 1
+            wordTable[input[index]]=1;
+        }
+    }
+}
+
+Object.filter = (obj, predicate) => Object.keys(obj)
+.filter( key => predicate(obj[key]) )
+.reduce( (res, key) => (res[key] = obj[key], res), {} );
+
+function mostFrequentWords(){
+    var maxfreq = Math.max(...Object.values(wordTable));
+    var most_freq = Object.filter(wordTable, value => value == maxfreq);
+    return most_freq;
+}
+
+function number_of_words(){
+    var number_of_words = Object.values(wordTable).reduce((t, n) => t + n);
+    return number_of_words;
+}
+
+/*removes punctuation from txt , keeping only white spaces and new lines*/
 var no_punc = function (string_txt){
    var  no_punc = string_txt.replace(/[^\w\s]|'\n'/g, "");
     return no_punc;
 }
 
+/*moves words from txt to table*/
+var transfer_to_table = function (string_txt){
+    var array_w = no_punc(string_txt).toLowerCase().replace(/\s+/g, " ").split(" ");
+    fill_wordTable(array_w);
+}
+
+//to be deprec
 /*returns just the words in a array */
 var the_words = function (string_txt){
-    var the_words = no_punc(string_txt).toLowerCase();
-    the_words = the_words.replace(/\s+/g, " ")
+    var the_words = no_punc(string_txt).toLowerCase().replace(/\s+/g, " ");
     the_words = the_words.split(" ");
     return the_words;
 }
 
-/*Will contain the total number of characters in the text, including all white spaces.
- nWords: integer*/
+/*Will contain the total number of characters in the text, including all white spaces.*/
 var nChars = function (string_txt){
     var characters = string_txt.length;
     return characters;
@@ -60,8 +89,9 @@ var nChars = function (string_txt){
 /*Will contain the total number of words in the text. For example, “Hello, World-1!” contains three words:
  “hello”, “world” and “1”*/
 var nWords = function (string_txt){
-    var words = the_words(string_txt);
-    return words.length;
+    transfer_to_table(string_txt);
+    var num_w =number_of_words();
+    return num_w;
 }
 
 /*Will contain the number of lines in the text .*/
@@ -84,18 +114,18 @@ var nNonEmptyLines = function (string_txt){
     return number_lines;
 }
 
-
 /*returns avg length of words in txt*/
 var averageWordLength = function (string_txt){
-    var words = the_words(string_txt);
-    var sum=0;
-    for (index = 0; index < words.length; ++index) {
-       sum = sum + words[index].length;
-    }
-    return sum/words.length;
+    var words = Object.keys(wordTable);
+    var freq = Object.values(wordTable);
+    const sum = words.reduce((cum, w) => cum + w.length, 0);
+    const divident =  freq.reduce((cum, f) => cum + f, 0);
+    return sum/divident;
 }
 
-/*TOFIX*/
+
+
+/*TOFIX for some reason but ugly */
 /*returns max line length*/
 var maxLineLength = function (string_txt){
     var lines = string_txt.split(/\r\n|\r|\n/);
@@ -111,7 +141,7 @@ var maxLineLength = function (string_txt){
 }
 
 
-/*TOFIX*/
+/*TOFIX make proper algo*/
 /*returns all palindromes of txt*/
 var palindromes = function (string_txt){
     var words = the_words(string_txt);
@@ -129,7 +159,6 @@ var palindromes = function (string_txt){
     return pal;
 }
 
-/*TOFIX*/
 /*returns all longest word in txt*/
 var longestWords = function (string_txt){
     var words = the_words(string_txt);
@@ -150,64 +179,19 @@ var longestWords = function (string_txt){
 }
 
 
-/*TOFIX*/
-/*returns all most frequent word in txt*/
-var mostFrequentWords = function (string_txt){
-    var words =the_words(string_txt);
-    
-    //all words in text will be in a hashtable word_hash
-    var word_hash = {};
-    
-    var most_freq = {
-    word:[],
-    freq: 0,
-    };
-    
-    for (index = 0; index < words.length; ++index) {
-        //case 1: word already in hash table
-        if( words[index] in word_hash ){
-            var current_word = words[index];
-            
-            //increase value in hash table for word by 1
-            word_hash[current_word] ++;
-            
-            //if the max fqcy is smaller than the fqcy of the word, replace
-            if ( word_hash[current_word] > most_freq.freq){
-                most_freq.word.length =0; //clears the word array
-                most_freq.word.push(current_word);
-                most_freq.freq = word_hash[current_word];
-            }
-            
-            //if the max fqcy is equal to the fqcy of the word, add
-            else if ( word_hash[current_word] == most_freq.freq){
-                most_freq.word.push(current_word);
-                most_freq.freq = word_hash[current_word];
-            }
-        }
-        //case 2: word not in hash table
-        else{
-            //add word to hash table with value = 1
-            word_hash[words[index]]=1;
-        }
-    }
-    var results = most_freq.word.concat(most_freq.freq);
-    return results;
-}
-
-
 /******************** og function + my functions **********************/
 function getStats(txt)  {
 
     return {
     nChars: nChars(txt),
-    nWords: nWords(txt),//TOFIX NEED TO ADD SPERATOR AS NOT ONLY WHITE SPACES
+    nWords: nWords(txt),
     nLines: nLines(txt),
     nNonEmptyLines: nNonEmptyLines(txt), //WORKING ????
     averageWordLength: averageWordLength(txt),
     maxLineLength: maxLineLength(txt),
-    palindromes: palindromes(txt),//TOFIX NOT FINISHED
-    longestWords: longestWords(txt),//TOFIX
-    mostFrequentWords: mostFrequentWords(txt)//TOFIX
+    palindromes: palindromes(txt),//TOFIX proper algo
+    longestWords: longestWords(txt),//TOFIX redundant longes words
+    mostFrequentWords: mostFrequentWords()
     };
 }
 
