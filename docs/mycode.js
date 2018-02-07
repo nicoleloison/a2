@@ -42,8 +42,10 @@ var no_punc = function (string_txt){
     return no_punc;
 }
 
+/*returns just the words in a array */
 var the_words = function (string_txt){
-    var the_words = string_txt.replace(/\s+/g, " ").toLowerCase();
+    var the_words = no_punc(string_txt).toLowerCase();
+    the_words = the_words.replace(/\s+/g, " ")
     the_words = the_words.split(" ");
     return the_words;
 }
@@ -58,8 +60,7 @@ var nChars = function (string_txt){
 /*Will contain the total number of words in the text. For example, “Hello, World-1!” contains three words:
  “hello”, “world” and “1”*/
 var nWords = function (string_txt){
-    var words = no_punc(string_txt);
-    words =the_words(words);
+    var words = the_words(string_txt);
     return words.length;
 }
 
@@ -86,7 +87,7 @@ var nNonEmptyLines = function (string_txt){
 
 /*returns avg length of words in txt*/
 var averageWordLength = function (string_txt){
-    var words = string_txt.split(" ");//need to fix the line to word split
+    var words = the_words(string_txt);
     var sum=0;
     for (index = 0; index < words.length; ++index) {
        sum = sum + words[index].length;
@@ -100,6 +101,8 @@ var maxLineLength = function (string_txt){
     var lines = string_txt.split(/\r\n|\r|\n/);
     var temp_max =0;
     for (index = 0; index < lines.length; ++index) {
+        
+        
         if(temp_max<lines[index].split(" ").length){//need to fix the line to word split
             temp_max = lines[index].split(" ").length;
         }
@@ -111,7 +114,8 @@ var maxLineLength = function (string_txt){
 /*TOFIX*/
 /*returns all palindromes of txt*/
 var palindromes = function (string_txt){
-    var words = string_txt.split(" ");
+    var words = the_words(string_txt);
+    
     var pal= [];
     for (index = 0; index < words.length; ++index) {
         var current_word =  words[index].split('');
@@ -128,7 +132,7 @@ var palindromes = function (string_txt){
 /*TOFIX*/
 /*returns all longest word in txt*/
 var longestWords = function (string_txt){
-    var words = string_txt.split(" ");
+    var words = the_words(string_txt);
     var long_word = ["0"];//needs initialisation for comparaison
    
     for (index = 0; index < words.length; ++index) {
@@ -149,7 +153,7 @@ var longestWords = function (string_txt){
 /*TOFIX*/
 /*returns all most frequent word in txt*/
 var mostFrequentWords = function (string_txt){
-    var words = string_txt.split(" ");
+    var words =the_words(string_txt);
     
     //all words in text will be in a hashtable word_hash
     var word_hash = {};
@@ -193,10 +197,7 @@ var mostFrequentWords = function (string_txt){
 
 /******************** og function + my functions **********************/
 function getStats(txt)  {
-    
-    //clean up the txt
-  //  txt = no_punc(txt);
-    
+
     return {
     nChars: nChars(txt),
     nWords: nWords(txt),//TOFIX NEED TO ADD SPERATOR AS NOT ONLY WHITE SPACES
