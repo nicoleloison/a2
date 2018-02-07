@@ -4,30 +4,7 @@
 // UCID: 10083186
 // lAB secion B06
 //
-/* ---- og code --
-function getStats(txt) {
-    return {
-    nChars: 123,
-    nWords: 22,
-    nLines: 10,
-    nNonEmptyLines: 22,
-    averageWordLength: 3.3,
-    maxLineLength: 33,
-    palindromes: ["12321", "kayak", "mom"],
-    longestWords: ["xxxxxxxxx", "123444444"],
-    mostFrequentWords: [ "hello(7)", "world(1)" ]
-    };
-}
- */
 
-
-/*
- TODO
- 
- 1. check non empty line
- 2. fix longest word redundancy
- 3. compute proper palindrom check
- */
 
 /*Table of unique words in txt, key:word, val:freq*/
 
@@ -45,20 +22,21 @@ function fill_wordTable(input){
     }
 }
 
+/*filter function for the object */
 Object.filter = (obj, predicate) => Object.keys(obj)
 .filter( key => predicate(obj[key]) )
 .reduce( (res, key) => (res[key] = obj[key], res), {} );
 
+/*returns all most frequent words with their frequency*/
 function mostFrequentWords(){
     var maxfreq = Math.max(...Object.values(wordTable));
     var most_freq = Object.filter(wordTable, value => value == maxfreq);
     return most_freq;
 }
 
-
 /*removes punctuation from txt , keeping only white spaces and new lines*/
 var no_punc = function (string_txt){
-   var  no_punc = string_txt.replace(/[^\w\s]|'\n'/g, "");
+    var  no_punc = string_txt.replace(/[^\w\s]|'\n'/g, "");
     return no_punc;
 }
 
@@ -66,14 +44,6 @@ var no_punc = function (string_txt){
 var transfer_to_table = function (string_txt){
     var array_w = no_punc(string_txt).toLowerCase().replace(/\s+/g, " ").split(" ");
     fill_wordTable(array_w);
-}
-
-//to be deprec
-/*returns just the words in a array */
-var the_words = function (string_txt){
-    var the_words = no_punc(string_txt).toLowerCase().replace(/\s+/g, " ");
-    the_words = the_words.split(" ");
-    return the_words;
 }
 
 /*Will contain the total number of characters in the text, including all white spaces.*/
@@ -84,8 +54,7 @@ var nChars = function (string_txt){
 
 /*Will contain the total number of words in the text. For example, “Hello, World-1!” contains three words:
  “hello”, “world” and “1”*/
-var nWords = function (string_txt){
-    transfer_to_table(string_txt);
+function nWords(){
     const num_w = Object.values(wordTable).reduce((t, n) => t + n);
     return num_w;
 }
@@ -103,7 +72,7 @@ var nNonEmptyLines = function (string_txt){
     var number_lines = lines.length;
     for (index = 0; index < lines.length; ++index) {
         var first_char =lines[index][0];
-        if(first_char===" "){
+        if(first_char===" " || first_char==="/n" ){
          number_lines = number_lines - 1;
         }
     }
@@ -111,7 +80,7 @@ var nNonEmptyLines = function (string_txt){
 }
 
 /*returns avg length of words in txt*/
-var averageWordLength = function (string_txt){
+function averageWordLength(){
     var words = Object.keys(wordTable);
     var freq = Object.values(wordTable);
     const sum = words.reduce((cum, w) => cum + w.length, 0);
@@ -119,9 +88,7 @@ var averageWordLength = function (string_txt){
     return sum/divident;
 }
 
-
-
-/*TOFIX for some reason but ugly */
+//if time fix in pretier
 /*returns max line length*/
 var maxLineLength = function (string_txt){
     var lines = string_txt.split(/\r\n|\r|\n/);
@@ -136,20 +103,26 @@ var maxLineLength = function (string_txt){
     return temp_max;
 }
 
-function checkPalindrom(word) {
-    return word == word.split('').reverse().join('');
+/*helper function for pal, return bool*/
+function palindrom_check(string) {
+    return string == string.split('').reverse().join('');
 }
 
 /*returns all palindromes of txt*/
-var palindromes = function (string_txt){
+function palindromes (){
     var words =Object.keys(wordTable);
     var pal= [];
     for (index in words){
-        if ( checkPalindrom(words[index])=== true && words[index].length > 1){
+        if ( palindrom_check(words[index])=== true && words[index].length > 1){
             pal.push(words[index]);
         }
     }
-    return pal;
+    if (pal.length == 0){
+        return null;
+    }
+    
+    else
+        return pal;
 }
 
 /*returns all longest word in txt*/
@@ -169,16 +142,18 @@ function longestWords(){
 }
 /******************** og function + my functions **********************/
 function getStats(txt)  {
+    
+    transfer_to_table(txt)
 
     return {
     nChars: nChars(txt),
-    nWords: nWords(txt),
+    nWords: nWords(),
     nLines: nLines(txt),
-    nNonEmptyLines: nNonEmptyLines(txt), //WORKING ????
-    averageWordLength: averageWordLength(txt),
+    nNonEmptyLines: nNonEmptyLines(txt),
+    averageWordLength: averageWordLength(),
     maxLineLength: maxLineLength(txt),
-    palindromes: palindromes(txt),//TOFIX proper algo
-    longestWords: longestWords(),//TOFIX redundant longes words
+    palindromes: palindromes(),
+    longestWords: longestWords(),
     mostFrequentWords: mostFrequentWords()
     };
 }
