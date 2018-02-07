@@ -55,10 +55,6 @@ function mostFrequentWords(){
     return most_freq;
 }
 
-function number_of_words(){
-    var number_of_words = Object.values(wordTable).reduce((t, n) => t + n);
-    return number_of_words;
-}
 
 /*removes punctuation from txt , keeping only white spaces and new lines*/
 var no_punc = function (string_txt){
@@ -90,7 +86,7 @@ var nChars = function (string_txt){
  “hello”, “world” and “1”*/
 var nWords = function (string_txt){
     transfer_to_table(string_txt);
-    var num_w =number_of_words();
+    const num_w = Object.values(wordTable).reduce((t, n) => t + n);
     return num_w;
 }
 
@@ -140,45 +136,37 @@ var maxLineLength = function (string_txt){
     return temp_max;
 }
 
+function checkPalindrom(word) {
+    return word == word.split('').reverse().join('');
+}
 
-/*TOFIX make proper algo*/
 /*returns all palindromes of txt*/
 var palindromes = function (string_txt){
-    var words = the_words(string_txt);
-    
+    var words =Object.keys(wordTable);
     var pal= [];
-    for (index = 0; index < words.length; ++index) {
-        var current_word =  words[index].split('');
-        //palindromes cannot be just one letters
-        if (words[index].length !== 1 && words[index].length !== 0){
-            if (current_word[0] == current_word[current_word.length-1]){
-                  pal.push(words[index]);
-            }
+    for (index in words){
+        if ( checkPalindrom(words[index])=== true && words[index].length > 1){
+            pal.push(words[index]);
         }
     }
     return pal;
 }
 
 /*returns all longest word in txt*/
-var longestWords = function (string_txt){
-    var words = the_words(string_txt);
-    var long_word = ["0"];//needs initialisation for comparaison
-   
-    for (index = 0; index < words.length; ++index) {
-        var current_word = words[index];
-
-        if (current_word.length > long_word[0].length ){
-            long_word.length = 0 ;
-            long_word.push(current_word);
+function longestWords(){
+    var words = Object.keys(wordTable);
+    var word_length = words.map(elem => elem.length);
+    var max_l = Math.max(...word_length);
+    var longest_w =[];
+    for (index=0; index< words.length; index ++){
+        if (words[index].length == max_l){
+            longest_w.push(words[index]);
         }
-        else if (current_word.length == long_word[0].length) {
-            long_word.push(current_word);
-        }
+       
     }
-    return long_word;
+    //IF TIME ONLY, find a filter for array words with the condition
+    return longest_w;
 }
-
-
 /******************** og function + my functions **********************/
 function getStats(txt)  {
 
@@ -190,7 +178,7 @@ function getStats(txt)  {
     averageWordLength: averageWordLength(txt),
     maxLineLength: maxLineLength(txt),
     palindromes: palindromes(txt),//TOFIX proper algo
-    longestWords: longestWords(txt),//TOFIX redundant longes words
+    longestWords: longestWords(),//TOFIX redundant longes words
     mostFrequentWords: mostFrequentWords()
     };
 }
