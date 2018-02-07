@@ -35,33 +35,32 @@ function getStats(txt) {
  
  IDEAS: PUT ALL WORDS IN GLOBAL HASHTABLE WITH WORD => LENGTH OR WORD => FREQ
  */
-var my_words = function (string_txt){
-    var words = string_txt.split(" ").toLowerCase();//need to fix the line to word split
-    return words;
-}
 
-
-
-/*return number total chars in the txt*/
+/*Will contain the total number of characters in the text, including all white spaces.
+ nWords: integer*/
 var nChars = function (string_txt){
     var characters = string_txt.length;
     return characters;
 }
 
 
-/*returns number of NON UNIQUE +++++++ words in the txt*/
+/*Will contain the total number of words in the text. For example, “Hello, World-1!” contains three words:
+ “hello”, “world” and “1”*/
 var nWords = function (string_txt){
-    var words = string_txt.split(" ");//need to fix the line to word split
+     var words = string_txt.replace(/\s+/g, " ");
+    //var words = to_words(string_txt);
+    words = string_txt.split(" ");//need to fix the line to word split
     return words.length;
 }
 
-/*returns number of total lines in the txt */
+/*Will contain the number of lines in the text .*/
 var nLines = function (string_txt){
     var lines = string_txt.split(/\r\n|\r|\n/).length;
     return lines;
 }
 
-/*returns number of non empty lines in txt NOT WORKING*/
+/*Will contain the number of lines in the text containing at least one visible character. We will define visible
+ character as any character other than whitespace (space, new-line and tab).*/
 var nNonEmptyLines = function (string_txt){
     var lines = string_txt.split(/\r\n|\r|\n/);
     var number_lines = lines.length;
@@ -184,6 +183,10 @@ var mostFrequentWords = function (string_txt){
 
 /******************** og function + my functions **********************/
 function getStats(txt)  {
+    
+    //clean up the txt
+    txt = txt.toLowerCase();
+    txt = txt.replace(/[^\w\s]|'\n'/g, "");
    
     return {
     nChars: nChars(txt),
